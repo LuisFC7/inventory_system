@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\UserService;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use App\Rules\UserRules;
 
 class UserController extends Controller{
 
@@ -15,30 +17,50 @@ class UserController extends Controller{
 
     // This controller create an user with rules
     public function registerUser(Request $request){
+        
+        $allowedFields = UserRules::allowedFields();
 
-        $validator = Validator::make($request -> all(), [
-            'name' => 'required|string|max: 255',
-            'lastname' => 'required|string|max: 255',
-            'username' => 'required|string|max: 255',
-            'password' => [
-                            'required',
-                            'string',
-                            'min:8',
-                            'max:255',
-                            'confirmed',
-                            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
-                        ],
-            'email' => 'required|string|max: 255',
-            'department' => 'required|string|max: 255',
-                    ]);
+        $receivedFields = array_keys($request->all());
+        $extraFields = array_diff($receivedFields, $allowedFields);
+        
+        if (!empty($extraFields)) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Campos no permitidos',
+                'extra_fields' => array_values($extraFields)
+            ], 422);
+        }
 
-        if($validato->fails()){
-            return response()  -> json([
-                'success' =>  false,
+        $validator = Validator::make($request->all(), UserRules::registerRules());
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
                 'errors' => $validator->errors()
             ], 422);
         }
-    }
 
+        try {
+            
+            $filteredData = $request->only($allowedFields);
+            $user = $this->userService->createUser($filteredData);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuario creado exitosamente',
+                'data' => [
+                    'username' => $user->user_tag,
+                    'email' => $user->user_email,
+                ]
+            ], 200);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear el usuario',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 }
