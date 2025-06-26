@@ -15,29 +15,29 @@ class AuthController extends Controller
     }
 
     public function login(Request $request){
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string|min:8',
             'remember' => 'nullable|boolean'
         ]);
 
-        if ($this->authService->loginUser($request->all())) {
+        if ($this->authService->loginUser($credentials)) {
             $request->session()->regenerate();
             
             return response()->json([
                 'success' => true,
-                'message' => 'Login exitoso'
+                'message' => 'Login exitoso',
+                'redirect' => route('dashboard')
             ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Credenciales inválidas'
-            ], 401);
         }
 
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Credenciales inválidas',
+            'errors' => [
+                'email' => __('auth.failed')
+            ]
+        ], 422);
     }
 
     public function logout(Request $request){

@@ -92,7 +92,7 @@
                 <p class="mt-10 text-center text-sm/6 text-gray-500">
                     ¿No tienes una cuenta?, 
                     <a
-                        href="#"
+                        href="/register"
                         class="font-semibold text-indigo-600 hover:text-indigo-500"
                         >Registrate</a
                     >
@@ -127,6 +127,7 @@
                             'Accept': 'application/json',
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
+                        credentials: 'include',
                         body: JSON.stringify(formData)
                     });
 
@@ -137,7 +138,8 @@
                     }
 
                     if (data.success) {
-                        window.location.href = data.redirect || '/dashboard';
+                        sessionStorage.setItem('userEmail', form.email.value);
+                        window.location.href = data.redirect ;
                     } else {
                         showError(data.message || 'Credenciales incorrectas');
                     }

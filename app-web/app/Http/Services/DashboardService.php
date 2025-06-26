@@ -21,7 +21,7 @@ class DashboardService
             throw new \RuntimeException('Usuario no autenticado');
         }
 
-        return User::where('id', $user->id)
+        return User::where('user_id', $user->user_id)  // Usar user_id aquí también
             ->where('user_status', 1)
             ->firstOrFail();
     }
