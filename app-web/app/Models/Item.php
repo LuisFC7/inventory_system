@@ -40,7 +40,8 @@ class Item extends Model
         'item_fecha_salida',
         'item_observaciones',
         'item_status',
-        'item_user_id'
+        'item_user_id',
+        'item_fecha_modificacion'
     ];
 
     /**
@@ -51,8 +52,7 @@ class Item extends Model
     protected $casts = [
         'item_fecha_entrada' => 'datetime',
         'item_fecha_salida' => 'datetime',
-        'fecha_creacion' => 'datetime',
-        'fecha_actualizacion' => 'datetime'
+        'item_fecha_modificacion' => 'datetime'
     ];
 
     /**

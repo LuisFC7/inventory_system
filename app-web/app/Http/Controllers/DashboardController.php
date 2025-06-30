@@ -2,57 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\DashboardService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Users;
 
-class DashboardController extends Controller
-{
-    protected $dashboardService;
+class DashboardController extends Controller{
 
-    public function __construct(DashboardService $dashboardService)
+    
+    public function index()
     {
-        $this->middleware('auth'); // Protege todas las rutas del controlador
-        $this->dashboardService = $dashboardService;
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+        
+        // Generar iniciales para el avatar
+        $initials = $this->generateInitials($user->user_name . ' ' . $user->user_last_name);
+        
+        return view('dashboard', [
+            'user' => $user,
+            'initials' => $initials,
+            'lastAccess' => $user->user_last_access ? $user->user_last_access->format('d/m/Y H:i') : 'Nunca'
+        ]);
     }
-
-    /**
-     * Obtiene la información del usuario en formato JSON
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getUserInfo(Request $request){
-        try {
-            
-            $validated = $request->validate([
-                'email' => 'required|email',
-            ]);
-
-            
-            $email = $request->input('email');
-
-            
-            $userInfo = $this->dashboardService->getUserInfo($email);
-            
-            return response()->json([
-                'success' => true,
-                'data' => $userInfo
-            ], 200); 
-            
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Error de validación (email faltante o inválido)
-            return response()->json([
-                'success' => false,
-                'message' => 'Error de validación',
-                'errors' => $e->errors()
-            ], 422); // Código HTTP 422 (datos inválidos)
-            
-        } catch (\Exception $e) {
-            // Otros errores (ej: usuario no encontrado)
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], $e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException ? 404 : 500);
+    
+    protected function generateInitials($name)
+    {
+        $words = explode(' ', $name);
+        $initials = '';
+        
+        foreach ($words as $word) {
+            $initials .= strtoupper(substr($word, 0, 1));
+            if (strlen($initials) >= 2) break;
         }
+        
+        return $initials;
     }
 }

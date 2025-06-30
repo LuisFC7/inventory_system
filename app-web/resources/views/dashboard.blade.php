@@ -9,7 +9,7 @@
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
-        <!-- Barra superior -->
+        <!-- Barra superior (se mantiene igual) -->
         <header class="bg-white shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                 <div class="flex items-center">
@@ -17,26 +17,23 @@
                     <span class="ml-2 text-xl font-semibold text-gray-900">MiApp</span>
                 </div>
                 <div class="relative">
-                    <!-- Botón para menú móvil -->
                     <button id="userMenuButton" class="flex items-center space-x-2 focus:outline-none">
                         <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                            <!-- Avatar placeholder - reemplazar con imagen real -->
-                            <span class="text-indigo-600 font-medium" id="userInitials">US</span>
+                            <span class="text-indigo-600 font-medium">{{ $initials }}</span>
                         </div>
-                        <span class="hidden md:inline text-gray-700">Usuario Sistema</span>
+                        <span class="hidden md:inline text-gray-700">{{ $user->user_name }}</span>
                         <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
                     </button>
                     
-                    <!-- Menú desplegable -->
                     <div id="userMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                         <div class="px-4 py-2 border-b">
                             <div class="flex items-center space-x-3">
                                 <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                    <span class="text-indigo-600 font-medium" id="userInitialsMenu">US</span>
+                                    <span class="text-indigo-600 font-medium">{{ $initials }}</span>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900" id="userNameMenu">Usuario Sistema</p>
-                                    <p class="text-xs text-gray-500" id="userEmailMenu">usuario@example.com</p>
+                                    <p class="text-sm font-medium text-gray-900">{{ $user->user_name }} {{ $user->user_last_name }}</p>
+                                    <p class="text-xs text-gray-500">{{ $user->user_email }}</p>
                                 </div>
                             </div>
                         </div>
@@ -45,9 +42,6 @@
                         </a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-boxes mr-2 text-gray-400"></i> Inventario
-                        </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-ellipsis-h mr-2 text-gray-400"></i> Otros
                         </a>
                         <form id="logoutForm" action="{{ route('logout') }}" method="POST">
                             @csrf
@@ -62,59 +56,53 @@
 
         <!-- Contenido principal -->
         <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            @if(session('success'))
+                <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
+            
             <div class="bg-white shadow rounded-lg p-6">
-                <h1 class="text-2xl font-bold text-gray-900">Bienvenido al Panel</h1>
-                <p class="mt-2 text-gray-600">Selecciona una opción del menú de usuario para comenzar.</p>
+                <h1 class="text-2xl font-bold text-gray-900">Bienvenido, {{ $user->user_name }}</h1>
+                <p class="mt-2 text-gray-600">
+                    Último acceso: 
+                    @if($user->user_last_access)
+                        {{ $user->user_last_access->locale('es')->diffForHumans(['parts' => 1, 'short' => false]) }}
+                    @else
+                        Nunca
+                    @endif
+                </p>
                 
-                <!-- Versión móvil - Menú como cards -->
-                <div class="mt-8 md:hidden grid grid-cols-1 gap-4">
-                    <a href="#" class="p-4 border rounded-lg hover:bg-gray-50">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-indigo-50 text-indigo-600">
-                                <i class="fas fa-cog"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="font-medium text-gray-900">Configuración</h3>
-                                <p class="text-sm text-gray-500">Ajustes de tu cuenta</p>
-                            </div>
+                <div class="mt-6 grid grid-cols-1 gap-6">
+                    <!-- Sección de Acciones Rápidas (ahora ocupa todo el ancho) -->
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h2 class="text-lg font-semibold text-green-800 mb-4">Acciones Rápidas</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- Botón 1 -->
+                            <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
+                                <i class="fas fa-plus-circle text-green-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700 text-center">Agregar Producto</span>
+                            </a>
+                            
+                            <!-- Botón 2 -->
+                            <a href="{{ route('items.index') }}" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
+                                <i class="fas fa-search text-blue-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700 text-center">Consultar Inventario</span>
+                            </a>
+                            
+                            <!-- Botón 3 -->
+                            <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
+                                <i class="fas fa-minus-circle text-red-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700 text-center">Eliminar Producto</span>
+                            </a>
+                            
+                            <!-- Botón 4 -->
+                            <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
+                                <i class="fas fa-file-alt text-yellow-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700 text-center">Generar Reporte</span>
+                            </a>
                         </div>
-                    </a>
-                    <a href="#" class="p-4 border rounded-lg hover:bg-gray-50">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-green-50 text-green-600">
-                                <i class="fas fa-boxes"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="font-medium text-gray-900">Inventario</h3>
-                                <p class="text-sm text-gray-500">Gestiona tus productos</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="#" class="p-4 border rounded-lg hover:bg-gray-50">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-yellow-50 text-yellow-600">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="font-medium text-gray-900">Otros</h3>
-                                <p class="text-sm text-gray-500">Otras opciones</p>
-                            </div>
-                        </div>
-                    </a>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="w-full text-left p-4 border rounded-lg hover:bg-gray-50">
-                            <div class="flex items-center">
-                                <div class="p-3 rounded-full bg-red-50 text-red-600">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="font-medium text-gray-900">Cerrar sesión</h3>
-                                    <p class="text-sm text-gray-500">Salir del sistema</p>
-                                </div>
-                            </div>
-                        </button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </main>
@@ -132,24 +120,10 @@
             const menu = document.getElementById('userMenu');
             const button = document.getElementById('userMenuButton');
             
-            if (!menu.contains(event.target) && !button.contains(event.target)) {
+            if (menu && button && !menu.contains(event.target) && !button.contains(event.target)) {
                 menu.classList.add('hidden');
             }
         });
-
-        // Aquí puedes agregar la lógica para cargar los datos del usuario
-        // cuando tengas el controlador listo:
-        /*
-        fetch('/api/user-data')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('userInitials').textContent = data.initials;
-                document.getElementById('userInitialsMenu').textContent = data.initials;
-                document.getElementById('userNameMenu').textContent = data.name;
-                document.getElementById('userEmailMenu').textContent = data.email;
-                // Actualizar otros elementos según sea necesario
-            });
-        */
     </script>
 </body>
 </html>

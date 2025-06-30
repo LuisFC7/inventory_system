@@ -23,23 +23,36 @@
             </div>
 
             <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form class="space-y-6" id="loginForm">
+                <!-- Mostrar mensajes de sesión -->
+                @if(session('status'))
+                <div class="mb-4 p-3 text-sm text-green-700 bg-green-100 rounded-lg">
+                    {{ session('status') }}
+                </div>
+                @endif
+
+                <form class="space-y-6" id="loginForm" method="POST" action="{{ route('login.form') }}">
+                    @csrf
+
                     <div>
                         <label
-                            for="email"
+                            for="username"
                             class="block text-sm/6 font-medium text-gray-900"
-                            >Usuario</label
+                            >Usuario o Email</label
                         >
                         <div class="mt-2">
                             <input
-                                type="email"
-                                name="email"
-                                id="email"
-                                autocomplete="email"
+                                type="text"
+                                name="username"
+                                id="username"
+                                autocomplete="username"
                                 required
+                                value="{{ old('username') }}"
                                 class="block w-full rounded-md border border-black bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                             />
                         </div>
+                        @error('username')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
@@ -67,6 +80,21 @@
                                 class="block w-full rounded-md border border-black bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                             />
                         </div>
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="flex items-center">
+                        <input
+                            id="remember"
+                            name="remember"
+                            type="checkbox"
+                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                        />
+                        <label for="remember" class="ml-2 block text-sm text-gray-900">
+                            Recordar sesión
+                        </label>
                     </div>
 
                     <!-- Mensaje de error -->
@@ -92,7 +120,7 @@
                 <p class="mt-10 text-center text-sm/6 text-gray-500">
                     ¿No tienes una cuenta?, 
                     <a
-                        href="/register"
+                        href="{{ route('register.form') }}"
                         class="font-semibold text-indigo-600 hover:text-indigo-500"
                         >Registrate</a
                     >
@@ -102,56 +130,54 @@
 
         <script>
             document.getElementById('loginForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                // Mostrar spinner y deshabilitar botón
-                document.getElementById('spinner').classList.remove('hidden');
-                document.getElementById('btnText').classList.add('hidden');
-                document.getElementById('submitBtn').disabled = true;
-                
-                // Ocultar mensajes de error previos
-                document.getElementById('errorMessage').classList.add('hidden');
-                
-                const form = e.target;
-                const formData = {
-                    email: form.email.value,
-                    password: form.password.value,
-                    _token: '{{ csrf_token() }}' // Solo necesario si no usas el header
-                };
+    e.preventDefault();
+    
+    // Mostrar spinner
+    document.getElementById('spinner').classList.remove('hidden');
+    document.getElementById('btnText').classList.add('hidden');
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('errorMessage').classList.add('hidden');
+    
+    try {
+        const response = await fetch("{{ route('login') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                remember: document.getElementById('remember').checked
+            })
+        });
 
-                try {
-                    const response = await fetch('{{ route("login") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(formData)
-                    });
+        const data = await response.json();
 
-                    const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || data.message || 'Error en el login');
+        }
 
-                    if (!response.ok) {
-                        throw new Error(data.message || 'Error en el servidor');
-                    }
+        // Redirección exitosa
+        window.location.href = data.redirect || '/dashboard';
 
-                    if (data.success) {
-                        sessionStorage.setItem('userEmail', form.email.value);
-                        window.location.href = data.redirect ;
-                    } else {
-                        showError(data.message || 'Credenciales incorrectas');
-                    }
-                } catch (error) {
-                    showError(error.message || 'Ocurrió un error al iniciar sesión');
-                } finally {
-                    // Ocultar spinner y habilitar botón
-                    document.getElementById('spinner').classList.add('hidden');
-                    document.getElementById('btnText').classList.remove('hidden');
-                    document.getElementById('submitBtn').disabled = false;
-                }
+    } catch (error) {
+        showError(error.message);
+        
+        // Recargar el token CSRF si hay error
+        await fetch('/csrf-token')
+            .then(res => res.json())
+            .then(data => {
+                document.querySelector('meta[name="csrf-token"]').content = data.token;
             });
+    } finally {
+        document.getElementById('spinner').classList.add('hidden');
+        document.getElementById('btnText').classList.remove('hidden');
+        document.getElementById('submitBtn').disabled = false;
+    }
+});
 
             function showError(message) {
                 const errorElement = document.getElementById('errorMessage');
@@ -163,4 +189,6 @@
             }
         </script>
     </body>
+
+    @include('partials.footer')
 </html>

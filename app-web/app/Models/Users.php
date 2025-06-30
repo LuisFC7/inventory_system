@@ -28,11 +28,18 @@ class Users extends Model implements Authenticatable
         'user_tag',    
         'user_status',
         'user_password',
+        'user_last_access',
     ];
 
     protected $hidden = [
         'user_password',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'user_last_access' => 'datetime',  // Convierte el campo en Carbon
+        'user_creation' => 'datetime',     // Opcional: si también es fecha
+        'user_modification' => 'datetime', // Opcional: si también es fecha
     ];
 
     // Métodos esenciales para autenticación
