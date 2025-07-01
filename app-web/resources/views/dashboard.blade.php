@@ -14,7 +14,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                 <div class="flex items-center">
                     <img class="h-8 w-auto" src="{{ asset('icons/warehouse-stock-svgrepo-com.svg') }}" alt="Logo">
-                    <span class="ml-2 text-xl font-semibold text-gray-900">MiApp</span>
+                    <span class="ml-2 text-xl font-semibold text-gray-900">INVEX</span>
                 </div>
                 <div class="relative">
                     <button id="userMenuButton" class="flex items-center space-x-2 focus:outline-none">
@@ -77,26 +77,32 @@
                     <!-- Sección de Acciones Rápidas (ahora ocupa todo el ancho) -->
                     <div class="bg-green-50 p-6 rounded-lg">
                         <h2 class="text-lg font-semibold text-green-800 mb-4">Acciones Rápidas</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <!-- Botón 1 -->
-                            <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
-                                <i class="fas fa-plus-circle text-green-600 text-2xl mb-2"></i>
-                                <span class="text-sm font-medium text-gray-700 text-center">Agregar Producto</span>
-                            </a>
-                            
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                             <!-- Botón 2 -->
                             <a href="{{ route('items.index') }}" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
                                 <i class="fas fa-search text-blue-600 text-2xl mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700 text-center">Consultar Inventario</span>
                             </a>
+                            <!-- Botón 1 -->
+                            <a href="{{ route('items.create') }}" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
+                                <i class="fas fa-plus-circle text-green-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700 text-center">Agregar Item</span>
+                            </a>
                             
-                            <!-- Botón 3 -->
-                            <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
-                                <i class="fas fa-minus-circle text-red-600 text-2xl mb-2"></i>
-                                <span class="text-sm font-medium text-gray-700 text-center">Eliminar Producto</span>
+                            
+                            <!-- Botón 3 - Actualizar Item -->
+                            <a href="{{ route('items.indexUpdateForm') }}" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
+                                <i class="fas fa-sync-alt text-purple-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700 text-center">Actualizar Item</span>
                             </a>
                             
                             <!-- Botón 4 -->
+                            <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
+                                <i class="fas fa-minus-circle text-red-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700 text-center">Eliminar Item</span>
+                            </a>
+                            
+                            <!-- Botón 5 -->
                             <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
                                 <i class="fas fa-file-alt text-yellow-600 text-2xl mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700 text-center">Generar Reporte</span>
@@ -126,4 +132,5 @@
         });
     </script>
 </body>
+@include('partials.footer')
 </html>

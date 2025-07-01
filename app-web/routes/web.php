@@ -16,22 +16,6 @@ Route::get('/csrf-token', function() {
     return response()->json(['token' => csrf_token()]);
 });
 
-// Route::post('/register', [UserController::class, 'registerUser']);
-
-// Rutas de autenticación
-// Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-// Route::post('/login', [AuthController::class, 'login']);
-
-// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Rutas protegidas
-// Route::middleware('auth')->group(function () {
-//     Route::get('/dashboard', 'DashboardController@index');
-// });
-
-// Route::get('/dashboard', [DashboardController::class, 'getUserInfo'])
-//      ->middleware('auth')
-//      ->name('dashboard');
 
 
 // Ruta para mostrar el formulario (GET)
@@ -46,8 +30,11 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Rutas protegidas
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/items/update', [DashboardController::class, 'showEditTable'])->name('dash.update');
     Route::resource('items', ItemController::class);
+
+    Route::get('/items/update', [ItemController::class, 'indexUpdateForm'])->name('items.indexUpdateForm');
+    Route::get('/items/updateForm', [ItemController::class, 'index2'])->name('items.index2');
     
+
 });
-
-

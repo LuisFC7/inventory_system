@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Users;
+use App\Models\Item;
 
 class DashboardController extends Controller{
 
@@ -35,5 +36,10 @@ class DashboardController extends Controller{
         }
         
         return $initials;
+    }
+
+    //funcion para mostrar vista de update
+    public function showEditTable(){
+        return view('items.updateInventory');
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta de Inventario - INVEX</title>
+    <title>Actualizar Inventario - INVEX</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -95,9 +95,9 @@
             
             <div class="bg-white shadow rounded-lg p-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Consulta de Inventario</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Actualización de Inventario</h1>
 
-                    <form method="GET" action="{{ route('items.index') }}" class="relative w-full md:w-64 flex items-center">
+                    <form method="GET" action="{{ route('items.index2') }}" class="relative w-full md:w-64 flex items-center">
                         <input type="text" name="search" id="searchInput" value="{{ request('search') }}" 
                             placeholder="Buscar..." 
                             class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -105,7 +105,7 @@
                         
                         <!-- Botón de limpiar (solo visible cuando hay búsqueda) -->
                         @if(request('search'))
-                            <a href="{{ route('items.index') }}" 
+                            <a href="{{ route('items.index2') }}" 
                             class="ml-2 p-2 text-gray-500 hover:text-gray-700"
                             title="Limpiar búsqueda">
                                 <i class="fas fa-times"></i>
@@ -155,8 +155,13 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('items.show', $item->item_id) }}" class="text-indigo-600 hover:text-indigo-900" title="Ver detalle">
-                                            <i class="fas fa-eye"></i> Ver
+                                        <a 
+                                            href="{{ route('items.edit', $item->item_id) }}" 
+                                            class="flex items-center px-3 py-2 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-md transition-colors"
+                                            title="Editar item"
+                                        >
+                                            <i class="fas fa-edit mr-2"></i> 
+                                            Editar
                                         </a>
                                     </td>
                                 </tr>
