@@ -97,7 +97,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <h1 class="text-2xl font-bold text-gray-900">Actualización de Inventario</h1>
 
-                    <form method="GET" action="{{ route('items.index2') }}" class="relative w-full md:w-64 flex items-center">
+                    <form method="GET" action="{{ route('items.indexUpdateForm') }}" class="relative w-full md:w-64 flex items-center">
                         <input type="text" name="search" id="searchInput" value="{{ request('search') }}" 
                             placeholder="Buscar..." 
                             class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -105,7 +105,7 @@
                         
                         <!-- Botón de limpiar (solo visible cuando hay búsqueda) -->
                         @if(request('search'))
-                            <a href="{{ route('items.index2') }}" 
+                            <a href="{{ route('items.indexUpdateForm') }}" 
                             class="ml-2 p-2 text-gray-500 hover:text-gray-700"
                             title="Limpiar búsqueda">
                                 <i class="fas fa-times"></i>

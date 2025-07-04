@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,11 +31,17 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Rutas protegidas
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/items/update', [DashboardController::class, 'showEditTable'])->name('dash.update');
+    // Route::get('/items/update', [DashboardController::class, 'showEditTable'])->name('dash.update');
     Route::resource('items', ItemController::class);
 
-    Route::get('/items/update', [ItemController::class, 'indexUpdateForm'])->name('items.indexUpdateForm');
-    Route::get('/items/updateForm', [ItemController::class, 'index2'])->name('items.index2');
-    
+    Route::get('/items-update', [ItemController::class, 'indexUpdateForm'])->name('items.indexUpdateForm');
+
+    Route::get('/items-report', [ReportController::class, 'showReportForm'])->name('items.reports');
+    Route::post('/items-generate-report', [ReportController::class, 'generateReport'])->name('items.generateReport');
+    // Route::post('/items-filter-preview', [ReportController::class, 'getFilteredItems'])->name('items.getFilteredItems');
+
+    Route::match(['get', 'post'], '/items-filter-preview', [ReportController::class, 'getFilteredItems'])
+    ->name('items.getFilteredItems');
+
 
 });

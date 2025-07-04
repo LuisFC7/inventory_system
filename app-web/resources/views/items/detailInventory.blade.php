@@ -53,17 +53,21 @@
                             <h2 class="text-lg font-bold text-gray-900">{{ $item['item_nombre'] }}</h2>
                             <p class="text-sm text-gray-600">{{ $item['item_activo_fijo'] }}</p>
                         </div>
-                        <span class="mt-2 sm:mt-0 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            @php
-                                $statusClasses = [
-                                    'activo' => 'bg-green-100 text-green-800',
-                                    'inactivo' => 'bg-gray-100 text-gray-800',
-                                    'mantenimiento' => 'bg-yellow-100 text-yellow-800',
-                                    'baja' => 'bg-red-100 text-red-800'
-                                ];
-                                echo $statusClasses[strtolower($item['item_status'])] ?? 'bg-blue-100 text-blue-800';
-                            @endphp">
-                            {{ ucfirst($item['item_status']) }}
+                        <span class="mt-2 sm:mt-0 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border @php
+                            // Definimos las clases para cada estado (en mayúsculas para consistencia)
+                            $statusClasses = [
+                                'DISPONIBLE' => 'bg-green-100 text-green-800 border-green-200',
+                                'DETENIDA' => 'bg-red-100 text-red-800 border-red-200',
+                                'TRABAJANDO' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                'POR SALIR' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                                'COMPRAS' => 'bg-purple-100 text-purple-800 border-purple-200'
+                            ];
+                            
+                            // Normalizamos el estado del ítem a mayúsculas y sin espacios extras
+                            $currentStatus = strtoupper(trim($item['item_status']));
+                            echo $statusClasses[$currentStatus] ?? 'bg-gray-100 text-gray-800 border-gray-200';
+                        @endphp">
+                            {{ ucfirst(strtolower($item['item_status'])) }}
                         </span>
                     </div>
                 </div>

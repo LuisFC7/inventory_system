@@ -85,7 +85,7 @@ class ItemController extends Controller
     {
         return view('items.addInventory');
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
@@ -206,5 +206,135 @@ class ItemController extends Controller
         $item->delete();
         
         return redirect()->route('items.index')->with('success', 'Item eliminado exitosamente.');
+    }
+
+
+    // REPORT GENERATION FUNCTIONALITY
+        // Mostrar formulario de reportes
+    public function showReportForm(){
+        $users = User::select(['user_id', 'user_name', 'user_last_name'])->get();
+        return view('items.prueba', compact('users'));
+    }
+
+    // Generar reporte
+    public function generateReport(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'status' => 'nullable|string|in:DISPONIBLE,DETENIDA,TRABAJANDO,POR SALIR,COMPRAS',
+            'user_id' => 'nullable|integer|exists:users,user_id',
+            'location' => 'nullable|string|in:origin,destination',
+            'location_value' => 'nullable|string|max:255',
+            'format' => 'required|string|in:pdf,excel'
+        ]);
+
+        $query = Item::with('user');
+
+        // Filtro por rango de fechas
+        if ($request->date_range && $request->start_date && $request->end_date) {
+            $dateField = match($request->date_range) {
+                'entry_date' => 'item_fecha_entrada',
+                'modification_date' => 'item_fecha_modificacion',
+                'exit_date' => 'item_fecha_salida',
+                default => 'item_fecha_modificacion'
+            };
+
+            $query->whereBetween($dateField, [
+                $request->start_date . ' 00:00:00',
+                $request->end_date . ' 23:59:59'
+            ]);
+        }
+
+        // Filtro por estado
+        if ($request->filled('status')) {
+            $query->where('item_status', $request->status);
+        }
+
+        // Filtro por usuario
+        if ($request->filled('user_id')) {
+            $query->where('item_user_id', $request->user_id);
+        }
+
+        // Filtro por ubicación
+        if ($request->filled('location') && $request->filled('location_value')) {
+            $locationField = $request->location === 'origin' ? 'item_origen' : 'item_destino';
+            $query->where($locationField, 'LIKE', '%' . $request->location_value . '%');
+        }
+
+        $items = $query->orderBy('item_fecha_modificacion', 'desc')->get();
+
+        // Generar el reporte según el formato solicitado
+        if ($request->format === 'pdf') {
+            return $this->generatePdfReport($items);
+        } else {
+            return $this->generateExcelReport($items);
+        }
+    }
+
+    // Generar PDF
+    private function generatePdfReport($items)
+    {
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('items.reportPdf', [
+            'items' => $items,
+            'title' => 'Reporte de Inventario',
+            'date' => now()->format('d/m/Y H:i:s')
+        ]);
+        
+        return $pdf->download('reporte-inventario-' . now()->format('YmdHis') . '.pdf');
+    }
+
+    // Generar Excel
+    private function generateExcelReport($items)
+    {
+        return \Excel::download(new class($items) implements \FromCollection, \WithHeadings, \WithTitle {
+            private $items;
+
+            public function __construct($items)
+            {
+                $this->items = $items;
+            }
+
+            public function collection()
+            {
+                return $this->items->map(function ($item) {
+                    return [
+                        'Activo Fijo' => $item->item_activo_fijo,
+                        'Nombre' => $item->item_nombre,
+                        'Descripción' => $item->item_descripcion,
+                        'Tamaño' => $item->item_size,
+                        'Origen' => $item->item_origen,
+                        'Destino' => $item->item_destino,
+                        'Fecha Entrada' => $item->item_fecha_entrada->format('d/m/Y'),
+                        'Fecha Salida' => $item->item_fecha_salida ? $item->item_fecha_salida->format('d/m/Y') : 'N/A',
+                        'Estado' => $item->item_status,
+                        'Usuario' => $item->user ? $item->user->user_name . ' ' . $item->user->user_last_name : 'N/A',
+                        'Última Modificación' => $item->item_fecha_modificacion->format('d/m/Y H:i:s')
+                    ];
+                });
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'Activo Fijo',
+                    'Nombre',
+                    'Descripción',
+                    'Tamaño',
+                    'Origen',
+                    'Destino',
+                    'Fecha Entrada',
+                    'Fecha Salida',
+                    'Estado',
+                    'Usuario',
+                    'Última Modificación'
+                ];
+            }
+
+            public function title(): string
+            {
+                return 'Reporte Inventario';
+            }
+        }, 'reporte-inventario-' . now()->format('YmdHis') . '.xlsx');
     }
 }
