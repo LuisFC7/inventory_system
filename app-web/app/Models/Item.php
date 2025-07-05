@@ -41,7 +41,8 @@ class Item extends Model
         'item_observaciones',
         'item_status',
         'item_user_id',
-        'item_fecha_modificacion'
+        'item_fecha_modificacion',
+        'item_activity'
     ];
 
     /**

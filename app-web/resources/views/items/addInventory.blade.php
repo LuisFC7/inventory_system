@@ -242,7 +242,7 @@
             <option value="DETENIDA" {{ old('item_status') == 'DETENIDA' ? 'selected' : '' }}>DETENIDA</option>
             <option value="TRABAJANDO" {{ old('item_status') == 'TRABAJANDO' ? 'selected' : '' }}>TRABAJANDO</option>
             <option value="POR SALIR" {{ old('item_status') == 'POR SALIR' ? 'selected' : '' }}>POR SALIR</option>
-            <option value="COMPRAS" {{ old('item_status') == 'Compras' ? 'selected' : '' }}>Compras</option>
+            <option value="COMPRAS" {{ old('item_status') == 'COMPRAS' ? 'selected' : '' }}>COMPRAS</option>
         </select>
         @error('item_status')
             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ItemController extends Controller
 {
@@ -29,8 +30,10 @@ class ItemController extends Controller
                 'item_observaciones',
                 'item_status',
                 'item_user_id',
-                'item_fecha_modificacion'
+                'item_fecha_modificacion',
+                'item_activity'
             ])
+            ->where('item_activity', 1)
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('item_activo_fijo', 'LIKE', "%{$search}%")
@@ -62,8 +65,10 @@ class ItemController extends Controller
                 'item_observaciones',
                 'item_status',
                 'item_user_id',
-                'item_fecha_modificacion'
+                'item_fecha_modificacion',
+                'item_activity'
             ])
+            ->where('item_activity', 1)
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('item_activo_fijo', 'LIKE', "%{$search}%")
@@ -118,11 +123,16 @@ class ItemController extends Controller
             
         ]);
 
+        $validated['item_fecha_entrada'] = Carbon::parse($request->item_fecha_entrada)
+            ->setTime(now()->hour, now()->minute);
+        
         $user = Auth::user();
-
+        
         $item = new Item($validated);
         $item->item_user_id = $user->user_id;
         $item->item_fecha_modificacion = now();
+        $item -> item_activity=1;
+        
         $item->save();
 
         return redirect()->route('items.index')->with('success', 'Item agregado correctamente.');

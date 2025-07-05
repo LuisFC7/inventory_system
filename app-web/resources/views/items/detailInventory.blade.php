@@ -33,17 +33,6 @@
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
-        <!-- Barra superior con botón de volver -->
-        <!-- <header class="bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 py-3 flex items-center">
-                <a href="{{ route('items.index') }}" class="mr-3 p-1 rounded-full hover:bg-gray-100">
-                    <i class="fas fa-arrow-left text-gray-600"></i>
-                </a>
-                <h1 class="text-lg font-semibold text-gray-900">Detalle del Ítem</h1>
-            </div>
-        </header> -->
-        
-        <!-- Contenido principal -->
         <main class="flex-grow max-w-7xl mx-auto w-full px-4 py-4">
             <div class="bg-white shadow rounded-lg detail-card">
                 <!-- Encabezado -->

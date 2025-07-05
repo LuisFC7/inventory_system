@@ -36,8 +36,8 @@
     </div>
 
     @if($items->hasPages())
-        <div class="px-4 py-4 border-t border-gray-200">
-            {{ $items->appends(request()->except('page'))->links() }}
+        <div class="px-4 py-4 border-t border-gray-200 pagination">
+            {!! $items->appends(request()->except('page'))->links() !!}
         </div>
     @endif
 @endif

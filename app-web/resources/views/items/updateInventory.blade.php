@@ -183,12 +183,14 @@
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                 @php
                                     $statusClasses = [
-                                        'activo' => 'bg-green-100 text-green-800',
-                                        'inactivo' => 'bg-gray-100 text-gray-800',
-                                        'mantenimiento' => 'bg-yellow-100 text-yellow-800',
-                                        'baja' => 'bg-red-100 text-red-800'
+                                        'DISPONIBLE' => 'bg-green-100 text-green-800 border-green-200',
+                                        'DETENIDA' => 'bg-red-100 text-red-800 border-red-200',
+                                        'TRABAJANDO' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                        'POR SALIR' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                                        'COMPRAS' => 'bg-purple-100 text-purple-800 border-purple-200'
                                     ];
-                                    echo $statusClasses[strtolower($item->item_status)] ?? 'bg-blue-100 text-blue-800';
+                                    $currentStatus = strtoupper(trim($item->item_status));
+                                    echo $statusClasses[$currentStatus] ?? 'bg-blue-100 text-blue-800 border-blue-200';
                                 @endphp">
                                 {{ ucfirst($item->item_status) }}
                             </span>
@@ -200,8 +202,13 @@
                         </div>
                         
                         <div class="mt-3">
-                            <a href="{{ route('items.show', $item->item_id) }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center" title="Ver detalle">
-                                <i class="fas fa-eye mr-1"></i> Ver detalles
+                            <a 
+                                href="{{ route('items.edit', $item->item_id) }}" 
+                                class="flex items-center px-3 py-2 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-md transition-colors"
+                                title="Editar item"
+                            >
+                                <i class="fas fa-edit mr-2"></i> 
+                                Editar
                             </a>
                         </div>
                     </div>

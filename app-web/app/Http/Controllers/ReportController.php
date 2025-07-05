@@ -6,7 +6,9 @@ use App\Models\Item;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class ReportController extends Controller
 {
@@ -42,17 +44,28 @@ class ReportController extends Controller
     /**
      * Construye la consulta basada en los filtros
      */
-    protected function buildReportQuery(array $filters)
-    {
+    protected function buildReportQuery(array $filters){
         $query = Item::with('user');
 
         // Filtro por rango de fechas
-        if (!empty($filters['date_range']) && !empty($filters['start_date']) && !empty($filters['end_date'])) {
+        if (!empty($filters['date_range'])) {
             $dateField = $this->getDateField($filters['date_range']);
-            $query->whereBetween($dateField, [
-                $filters['start_date'] . ' 00:00:00',
-                $filters['end_date'] . ' 23:59:59'
-            ]);
+            
+            // Caso 1: Solo start_date está presente
+            if (!empty($filters['start_date']) && empty($filters['end_date'])) {
+                $query->where($dateField, '>=', $filters['start_date'] . ' 00:00:00');
+            }
+            // Caso 2: Solo end_date está presente
+            elseif (empty($filters['start_date']) && !empty($filters['end_date'])) {
+                $query->where($dateField, '<=', $filters['end_date'] . ' 23:59:59');
+            }
+            // Caso 3: Ambos están presentes
+            elseif (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+                $query->whereBetween($dateField, [
+                    $filters['start_date'] . ' 00:00:00',
+                    $filters['end_date'] . ' 23:59:59'
+                ]);
+            }
         }
 
         // Filtro por estado
@@ -65,7 +78,7 @@ class ReportController extends Controller
             $query->where('item_user_id', $filters['user_id']);
         }
 
-        // Filtro por ubicación
+        // Filtro por ubicación (aunque dijiste que lo quitarías, lo dejo por si acaso)
         if (!empty($filters['location']) && !empty($filters['location_value'])) {
             $locationField = $filters['location'] === 'origin' ? 'item_origen' : 'item_destino';
             $query->where($locationField, 'LIKE', '%' . $filters['location_value'] . '%');
@@ -83,7 +96,7 @@ class ReportController extends Controller
             'entry_date' => 'item_fecha_entrada',
             'modification_date' => 'item_fecha_modificacion',
             'exit_date' => 'item_fecha_salida',
-            default => 'item_fecha_modificacion'
+            default => 'item_fecha_entrada'
         };
     }
 
@@ -157,60 +170,72 @@ class ReportController extends Controller
      * Genera el reporte en Excel
      */
     protected function generateExcelReport($items)
-    {
-        return Excel::download(
-            new class($items) implements \FromCollection, \WithHeadings, \WithTitle {
-                private $items;
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Reporte Inventario');
 
-                public function __construct($items)
-                {
-                    $this->items = $items;
-                }
+    // Encabezados
+    $headers = [
+        'Activo Fijo',
+        'Nombre',
+        'Descripción',
+        'Tamaño',
+        'Origen',
+        'Destino',
+        'Fecha Entrada',
+        'Fecha Salida',
+        'Estado',
+        'Usuario',
+        'Última Modificación'
+    ];
 
-                public function collection()
-                {
-                    return $this->items->map(function ($item) {
-                        return [
-                            'Activo Fijo' => $item->item_activo_fijo,
-                            'Nombre' => $item->item_nombre,
-                            'Descripción' => $item->item_descripcion,
-                            'Tamaño' => $item->item_size,
-                            'Origen' => $item->item_origen,
-                            'Destino' => $item->item_destino,
-                            'Fecha Entrada' => $item->item_fecha_entrada->format('d/m/Y'),
-                            'Fecha Salida' => $item->item_fecha_salida ? $item->item_fecha_salida->format('d/m/Y') : 'N/A',
-                            'Estado' => $item->item_status,
-                            'Usuario' => $item->user ? $item->user->user_name . ' ' . $item->user->user_last_name : 'N/A',
-                            'Última Modificación' => $item->item_fecha_modificacion->format('d/m/Y H:i:s')
-                        ];
-                    });
-                }
+    // Insertar encabezados
+    $sheet->fromArray($headers, null, 'A1');
 
-                public function headings(): array
-                {
-                    return [
-                        'Activo Fijo',
-                        'Nombre',
-                        'Descripción',
-                        'Tamaño',
-                        'Origen',
-                        'Destino',
-                        'Fecha Entrada',
-                        'Fecha Salida',
-                        'Estado',
-                        'Usuario',
-                        'Última Modificación'
-                    ];
-                }
+    // 👉 Aplicar color al encabezado (fila 1)
+    $headerStyle = [
+        'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+        'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                   'startColor' => ['rgb' => '4F81BD']],
+        'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+    ];
 
-                public function title(): string
-                {
-                    return 'Reporte Inventario';
-                }
-            }, 
-            'reporte-inventario-' . now()->format('YmdHis') . '.xlsx'
-        );
+    $sheet->getStyle('A1:K1')->applyFromArray($headerStyle);
+
+    // 👉 Ajustar ancho automático de columnas
+    foreach (range('A', 'K') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
     }
+
+    // Insertar datos
+    $row = 2;
+    foreach ($items as $item) {
+        $sheet->fromArray([
+            $item->item_activo_fijo,
+            $item->item_nombre,
+            $item->item_descripcion,
+            $item->item_size,
+            $item->item_origen,
+            $item->item_destino,
+            optional($item->item_fecha_entrada)->format('d/m/Y'),
+            optional($item->item_fecha_salida)->format('d/m/Y') ?? 'N/A',
+            $item->item_status,
+            $item->user ? $item->user->user_name . ' ' . $item->user->user_last_name : 'N/A',
+            optional($item->item_fecha_modificacion)->format('d/m/Y H:i:s'),
+        ], null, 'A' . $row);
+        $row++;
+    }
+
+    // Guardar a archivo temporal y enviar descarga
+    $filename = 'reporte-inventario-' . now()->format('YmdHis') . '.xlsx';
+    $tempFile = tempnam(sys_get_temp_dir(), $filename);
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($tempFile);
+
+    return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
+}
+
 
     public function getFilteredItems(Request $request){
         

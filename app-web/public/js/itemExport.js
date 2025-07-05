@@ -13,6 +13,28 @@ document.addEventListener('DOMContentLoaded', function() {
         fontScale: 0.85
     };
 
+    function getStatusCircleStyle(statusClass) {
+        let bg = '#3B82F6'; // azul por defecto
+
+        if (statusClass.includes('green')) bg = '#10B981'; // verde
+        else if (statusClass.includes('red')) bg = '#EF4444'; // rojo
+        else if (statusClass.includes('blue')) bg = '#3B82F6';   // azul
+        else if (statusClass.includes('yellow')) bg = '#F59E0B'; // amarillo
+        else if (statusClass.includes('purple')) bg = '#8B5CF6'; // morado
+        else if (statusClass.includes('gray')) bg = '#6B7280'; // gris
+
+        return `
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: ${bg};
+            margin-left: 8px;
+            margin-right: 30px;
+            display: inline-block;
+        `;
+    }
+
+
     // Función mejorada para generar contenido
     function generatePrintContent(forPDF = false) {
         const item = {
@@ -49,7 +71,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         border-bottom: 1px solid #3B82F6;
                         padding-bottom: 4px;
                         margin-bottom: 8px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
                     }
+                    .status-indicator {
+                        flex-shrink: 0;
+                    }
+
                     .title {
                         font-size: ${forPDF ? 1.3 * PDF_CONFIG.fontScale : 1.2}rem;
                         font-weight: bold;
@@ -68,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         font-weight: 600;
                         ${item.statusClass.includes('green') ? 'background-color: #D1FAE5; color: #065F46;' : ''}
                         ${item.statusClass.includes('red') ? 'background-color: #FEE2E2; color: #B91C1C;' : ''}
+                        ${item.statusClass.includes('blue') ? 'background-color: #DBEAFE; color: #1D4ED8;' : ''}
                         ${item.statusClass.includes('yellow') ? 'background-color: #FEF3C7; color: #92400E;' : ''}
                         ${item.statusClass.includes('gray') ? 'background-color: #F3F4F6; color: #374151;' : ''}
                     }
@@ -105,9 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
             </head>
             <body>
                 <div class="print-container">
-                    <div class="header">
-                        <div class="title">${item.nombre}</div>
-                        <div class="subtitle">${item.activoFijo} <span class="status">${item.status}</span></div>
+                    <div class="header flex justify-between items-center">
+                        <div>
+                            <div class="title">${item.nombre}</div>
+                            <div class="subtitle">${item.activoFijo} <span class="status">${item.status}</span></div>
+                        </div>
+                        <div class="status-indicator" style="${getStatusCircleStyle(item.statusClass)}"></div>
                     </div>
                     
                     <div class="detail-grid">

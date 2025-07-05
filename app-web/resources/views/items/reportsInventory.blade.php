@@ -134,20 +134,6 @@
                                 </select>
                             </div>
                             
-                            <!-- Filtro por origen/destino -->
-                            <div>
-                                <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Ubicación</label>
-                                <select id="location" name="location" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <option value="">Todas las ubicaciones</option>
-                                    <option value="origin">Origen</option>
-                                    <option value="destination">Destino</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label for="location_value" class="block text-sm font-medium text-gray-700 mb-1">Valor de ubicación</label>
-                                <input type="text" id="location_value" name="location_value" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Ingrese origen/destino">
-                            </div>
                         </div>
                         
                         <div class="flex flex-wrap gap-3 justify-end">
@@ -181,7 +167,7 @@
             document.getElementById('reportForm').reset();
             document.getElementById('start_date').disabled = true;
             document.getElementById('end_date').disabled = true;
-            document.getElementById('previewContent').innerHTML = 'Seleccione filtros para ver una vista previa...';
+            loadPreview();
         }
         
         // Manejo de campos de fecha
@@ -190,7 +176,7 @@
             document.getElementById('start_date').disabled = !dateTypeSelected;
             document.getElementById('end_date').disabled = !dateTypeSelected;
             
-            // Si se deselecciona el rango, limpiar las fechas
+            
             if (!dateTypeSelected) {
                 document.getElementById('start_date').value = '';
                 document.getElementById('end_date').value = '';
@@ -208,12 +194,7 @@
             
             // Configurar eventos para todos los filtros
             setupFilterEvents();
-            
-            // Cargar vista previa inicial si hay filtros en la URL
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.toString() !== '') {
-                loadPreview();
-            }
+            loadPreview();
         });
         
         // Configurar eventos para todos los campos de filtro
@@ -233,16 +214,9 @@
             });
         }
         
-        // Verificar si hay filtros activos y cargar vista previa
+
         function checkFiltersAndLoadPreview() {
-            const formData = getFormData();
-            const hasFilters = Object.values(formData).some(value => value !== '');
-            
-            if (hasFilters) {
-                loadPreview();
-            } else {
-                document.getElementById('previewContent').innerHTML = 'Seleccione filtros para ver una vista previa...';
-            }
+            loadPreview(); // Siempre cargar
         }
         
         // Obtener datos del formulario
@@ -309,20 +283,48 @@
 
         // Configurar eventos para los links de paginación
         function setupPaginationEvents() {
-            document.querySelectorAll('.pagination a').forEach(link => {
+            const previewContainer = document.getElementById('previewContent');
+
+            previewContainer.querySelectorAll('.pagination a').forEach(link => {
+                const clone = link.cloneNode(true);
+                link.parentNode.replaceChild(clone, link);
+            });
+
+            previewContainer.querySelectorAll('.pagination a').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Cargar la página directamente desde la URL del link
-                    fetch(this.href, {
+
+                    const url = this.href;
+
+                    previewContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-spinner fa-spin text-indigo-500 text-2xl"></i>
+                            <p class="mt-2 text-gray-600">Cargando página...</p>
+                        </div>
+                    `;
+
+                    fetch(url, {
                         method: 'GET',
                         headers: {
                             'Accept': 'text/html'
                         }
                     })
-                    .then(response => response.text())
+                    .then(response => {
+                        if (!response.ok) throw new Error("Error al paginar");
+                        return response.text();
+                    })
                     .then(html => {
-                        document.getElementById('previewContent').innerHTML = html;
-                        setupPaginationEvents(); // Reconfigurar eventos para la nueva paginación
+                        previewContainer.innerHTML = html;
+                        setupPaginationEvents();
+                    })
+                    .catch(error => {
+                        previewContainer.innerHTML = `
+                            <div class="text-red-500 p-4 bg-red-50 rounded">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                No se pudo cargar la nueva página del reporte.
+                            </div>
+                        `;
+                        console.error('Error de paginación AJAX:', error);
                     });
                 });
             });

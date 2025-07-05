@@ -178,12 +178,14 @@
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                 @php
                                     $statusClasses = [
-                                        'activo' => 'bg-green-100 text-green-800',
-                                        'inactivo' => 'bg-gray-100 text-gray-800',
-                                        'mantenimiento' => 'bg-yellow-100 text-yellow-800',
-                                        'baja' => 'bg-red-100 text-red-800'
+                                        'DISPONIBLE' => 'bg-green-100 text-green-800 border-green-200',
+                                        'DETENIDA' => 'bg-red-100 text-red-800 border-red-200',
+                                        'TRABAJANDO' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                        'POR SALIR' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                                        'COMPRAS' => 'bg-purple-100 text-purple-800 border-purple-200'
                                     ];
-                                    echo $statusClasses[strtolower($item->item_status)] ?? 'bg-blue-100 text-blue-800';
+                                    $currentStatus = strtoupper(trim($item->item_status));
+                                    echo $statusClasses[$currentStatus] ?? 'bg-blue-100 text-blue-800 border-blue-200';
                                 @endphp">
                                 {{ ucfirst($item->item_status) }}
                             </span>
@@ -313,10 +315,15 @@
 
         function getStatusClass(status) {
             const statusClasses = {
-                'activo': 'bg-green-100 text-green-800',
-                'inactivo': 'bg-gray-100 text-gray-800',
-                'mantenimiento': 'bg-yellow-100 text-yellow-800',
-                'baja': 'bg-red-100 text-red-800'
+                // 'activo': 'bg-green-100 text-green-800',
+                // 'inactivo': 'bg-gray-100 text-gray-800',
+                // 'mantenimiento': 'bg-yellow-100 text-yellow-800',
+                // 'baja': 'bg-red-100 text-red-800'
+                'DISPONIBLE' : 'bg-green-100 text-green-800 border-green-200',
+                'DETENIDA' : 'bg-red-100 text-red-800 border-red-200',
+                'TRABAJANDO' : 'bg-blue-100 text-blue-800 border-blue-200',
+                'POR SALIR' : 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                'COMPRAS' : 'bg-purple-100 text-purple-800 border-purple-200'
             };
             return statusClasses[status.toLowerCase()] || 'bg-blue-100 text-blue-800';
         }
