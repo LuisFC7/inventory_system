@@ -212,7 +212,7 @@
         function setupFilterEvents() {
             const filterElements = [
                 'date_range', 'start_date', 'end_date', 
-                'status', 'user_id', 'location', 'location_value'
+                'status', 'user_id', 'modified_user_id', 'location', 'location_value'
             ];
             
             filterElements.forEach(id => {
