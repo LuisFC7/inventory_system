@@ -216,7 +216,7 @@
                                     <select name="item_status" id="item_status" 
                                         class="w-full px-3 py-2 text-gray-700 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 @error('item_status') border-red-400 @enderror" required>
                                         <option value="">Seleccione un estado</option>
-                                        @foreach(['Disponible', 'Detenida', 'Trabajando', 'Por salir', 'Compras'] as $status)
+                                        @foreach(['DISPONIBLE', 'DETENIDA', 'TRABAJANDO', 'POR SALIR', 'COMPRAS'] as $status)
                                             <option value="{{ $status }}" {{ old('item_status', $item->item_status) == $status ? 'selected' : '' }}>
                                                 {{ $status }}
                                             </option>
@@ -238,7 +238,7 @@
 
                         <!-- Botones de acción -->
                         <div class="mt-8 flex justify-end space-x-3">
-                            <a href="{{ route('items.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <a href="{{ route('items.indexUpdateForm') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Cancelar
                             </a>
                             <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

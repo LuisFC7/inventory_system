@@ -42,7 +42,8 @@ class Item extends Model
         'item_status',
         'item_user_id',
         'item_fecha_modificacion',
-        'item_activity'
+        'item_activity',
+        'item_user_modifica_id'
     ];
 
     /**
@@ -76,6 +77,10 @@ class Item extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'item_user_id', 'user_id');
+    }
+
+    public function userModifier(){
+        return $this->belongsTo(User::class, 'item_user_modifica_id', 'user_id');
     }
 
     /**

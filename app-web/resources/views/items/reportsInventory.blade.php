@@ -125,8 +125,19 @@
                             
                             <!-- Filtro por usuario -->
                             <div>
-                                <label for="user_id" class="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
+                                <label for="user_id" class="block text-sm font-medium text-gray-700 mb-1">Creado por:</label>
                                 <select id="user_id" name="user_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="">Todos los usuarios</option>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->user_id }}">{{ $user->user_name }} {{ $user->user_last_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Filtro por usuario modificador -->
+                            <div>
+                                <label for="modified_user_id" class="block text-sm font-medium text-gray-700 mb-1">Modificado por:</label>
+                                <select id="modified_user_id" name="modified_user_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <option value="">Todos los usuarios</option>
                                     @foreach($users as $user)
                                         <option value="{{ $user->user_id }}">{{ $user->user_name }} {{ $user->user_last_name }}</option>

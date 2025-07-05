@@ -43,7 +43,7 @@
                             <p class="text-sm text-gray-600">{{ $item['item_activo_fijo'] }}</p>
                         </div>
                         <span class="mt-2 sm:mt-0 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border @php
-                            // Definimos las clases para cada estado (en mayúsculas para consistencia)
+                           
                             $statusClasses = [
                                 'DISPONIBLE' => 'bg-green-100 text-green-800 border-green-200',
                                 'DETENIDA' => 'bg-red-100 text-red-800 border-red-200',
@@ -56,7 +56,8 @@
                             $currentStatus = strtoupper(trim($item['item_status']));
                             echo $statusClasses[$currentStatus] ?? 'bg-gray-100 text-gray-800 border-gray-200';
                         @endphp">
-                            {{ ucfirst(strtolower($item['item_status'])) }}
+                            {{ strtoupper($item['item_status']) }}
+
                         </span>
                     </div>
                 </div>
@@ -124,6 +125,13 @@
                         <h3 class="text-xs font-medium text-gray-500 uppercase">Registrado por</h3>
                         <p class="mt-1 text-sm text-gray-900">
                             {{ $item['user_name'] }} {{ $item['user_last_name'] }}
+                        </p>
+                    </div>
+                    <!-- Usuario que modifico -->
+                    <div class="detail-field">
+                        <h3 class="text-xs font-medium text-gray-500 uppercase">Modificado por</h3>
+                        <p class="mt-1 text-sm text-gray-900">
+                            {{ $item['user_name_modifier'] }} {{ $item['user_last_name_modifier'] }}
                         </p>
                     </div>
                 </div>

@@ -36,7 +36,7 @@ class ReportController extends Controller
         ]);
 
         $query = $this->buildReportQuery($validated);
-        $items = $query->orderBy('item_fecha_modificacion', 'desc')->get();
+        $items = $query->orderBy('item_fecha_entrada', 'desc')->get();
 
         return $this->exportReport($items, $validated['format']);
     }

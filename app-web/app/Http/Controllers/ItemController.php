@@ -132,6 +132,7 @@ class ItemController extends Controller
         $item->item_user_id = $user->user_id;
         $item->item_fecha_modificacion = now();
         $item -> item_activity=1;
+        $item -> item_user_modifica_id = $user->user_id;
         
         $item->save();
 
@@ -145,7 +146,7 @@ class ItemController extends Controller
     {
         // $this->authorize('view', $item);
 
-        $item->load('user');
+        $item->load('user', 'userModifier');
         
         return view('items.detailInventory', [
             'item' => array_merge($item->only([
@@ -160,10 +161,13 @@ class ItemController extends Controller
                 'item_fecha_salida',
                 'item_observaciones',
                 'item_status',
-                'item_fecha_modificacion'
+                'item_fecha_modificacion',
+                'item_user_modifica_id'
             ]), [
                 'user_name' => $item->user ? $item->user->user_name : 'N/A',
-                'user_last_name' => $item->user ? $item->user->user_last_name : 'N/A'
+                'user_last_name' => $item->user ? $item->user->user_last_name : 'N/A',
+                'user_name_modifier' => $item->userModifier ?->user_name ?? 'N/A',
+                'user_last_name_modifier' => $item->userModifier ?->user_last_name ?? 'N/A',
             ])
         ]);
     }
@@ -199,11 +203,14 @@ class ItemController extends Controller
             'item_status' => 'required|string|max:255',
         ]);
 
+        $user = Auth::user();
+
         $item->fill($validated);
         $item->item_fecha_modificacion = now();
+        $item -> item_user_modifica_id = $user->user_id;
         $item->save();
 
-        return redirect()->route('items.index')->with('success', 'Item actualizado exitosamente.');
+        return redirect()->route('items.indexUpdateForm')->with('success', 'Item actualizado exitosamente.');
     }
 
     /**

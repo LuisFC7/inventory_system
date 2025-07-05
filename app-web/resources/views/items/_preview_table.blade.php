@@ -20,11 +20,22 @@
                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->item_activo_fijo }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->item_nombre }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                {{ $item->item_status == 'DISPONIBLE' ? 'bg-green-100 text-green-800' : 
-                                   ($item->item_status == 'TRABAJANDO' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                {{ $item->item_status }}
-                            </span>
+                            @php
+                            $statusClasses = [
+                                'DISPONIBLE' => 'bg-green-100 text-green-800 border-green-200',
+                                'DETENIDA' => 'bg-red-100 text-red-800 border-red-200',
+                                'TRABAJANDO' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                'POR SALIR' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                                'COMPRAS' => 'bg-purple-100 text-purple-800 border-purple-200',
+                            ];
+
+                            $statusClass = $statusClasses[$item->item_status] ?? 'bg-gray-100 text-gray-800 border-gray-200';
+                        @endphp
+
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full border {{ $statusClass }}">
+                            {{ $item->item_status }}
+                        </span>
+
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             {{ $item->item_origen }} → {{ $item->item_destino }}
