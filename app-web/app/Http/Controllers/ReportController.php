@@ -181,71 +181,84 @@ class ReportController extends Controller
      * Genera el reporte en Excel
      */
     protected function generateExcelReport($items)
-    {
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Reporte Inventario');
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Reporte Inventario');
 
-        // Encabezados
-        $headers = [
-            'Activo Fijo',
-            'Nombre',
-            'Descripción',
-            'Tamaño',
-            'Origen',
-            'Destino',
-            'Fecha Entrada',
-            'Fecha Salida',
-            'Estado',
-            'Usuario',
-            'Última Modificación'
-        ];
+    // Nuevos encabezados: iguales al PDF
+    $headers = [
+        'Activo Fijo',
+        'Nombre',
+        'Tag',
+        'Descripción',
+        'Tamaño',
+        'Origen',
+        'Destino',
+        'Fecha Entrada',
+        'Fecha Salida',
+        'Estado',
+        'Registrado por',
+        'Modificado por',
+        'Fecha de Modificación'
+    ];
 
-        // Insertar encabezados
-        $sheet->fromArray($headers, null, 'A1');
+    // Insertar encabezados
+    $sheet->fromArray($headers, null, 'A1');
 
-        // 👉 Aplicar color al encabezado (fila 1)
-        $headerStyle = [
-            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '4F81BD']],
-            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
-        ];
+    // Estilo encabezado
+    $headerStyle = [
+        'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+        'fill' => [
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'startColor' => ['rgb' => '4F81BD']
+        ],
+        'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+    ];
 
-        $sheet->getStyle('A1:K1')->applyFromArray($headerStyle);
+    $sheet->getStyle('A1:M1')->applyFromArray($headerStyle);
 
-        // 👉 Ajustar ancho automático de columnas
-        foreach (range('A', 'K') as $col) {
-            $sheet->getColumnDimension($col)->setAutoSize(true);
-        }
-
-        // Insertar datos
-        $row = 2;
-        foreach ($items as $item) {
-            $sheet->fromArray([
-                $item->item_activo_fijo,
-                $item->item_nombre,
-                $item->item_descripcion,
-                $item->item_size,
-                $item->item_origen,
-                $item->item_destino,
-                optional($item->item_fecha_entrada)->format('d/m/Y'),
-                optional($item->item_fecha_salida)->format('d/m/Y') ?? 'N/A',
-                $item->item_status,
-                $item->user ? $item->user->user_name . ' ' . $item->user->user_last_name : 'N/A',
-                optional($item->item_fecha_modificacion)->format('d/m/Y H:i:s'),
-            ], null, 'A' . $row);
-            $row++;
-        }
-
-        // Guardar a archivo temporal y enviar descarga
-        $filename = 'Reporte Inventario-' . now()->format('YmdHis') . '.xlsx';
-        $tempFile = tempnam(sys_get_temp_dir(), $filename);
-        $writer = new Xlsx($spreadsheet);
-        $writer->save($tempFile);
-
-        return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
+    // Ajustar ancho automático
+    foreach (range('A', 'M') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
     }
+
+    // Insertar datos
+    $row = 2;
+    foreach ($items as $item) {
+        $sheet->fromArray([
+            $item->item_activo_fijo ?? 'N/A',
+            $item->item_nombre ?? 'N/A',
+            $item->item_tag ?? 'N/A',
+            $item->item_descripcion ?? 'N/A',
+            $item->item_size ?? 'N/A',
+            $item->item_origen ?? 'N/A',
+            $item->item_destino ?? 'N/A',
+            isset($item->item_fecha_entrada)
+                ? \Carbon\Carbon::parse($item->item_fecha_entrada)->format('d/m/Y')
+                : 'N/A',
+            isset($item->item_fecha_salida)
+                ? \Carbon\Carbon::parse($item->item_fecha_salida)->format('d/m/Y')
+                : 'N/A',
+            $item->item_status ?? 'N/A',
+            $item->user ? $item->user->user_name . ' ' . $item->user->user_last_name : 'N/A',
+            $item->userModifier ? $item->userModifier->user_name . ' ' . $item->userModifier->user_last_name : 'N/A',
+            isset($item->item_fecha_modificacion)
+                ? \Carbon\Carbon::parse($item->item_fecha_modificacion)->format('d/m/Y H:i')
+                : 'N/A',
+        ], null, 'A' . $row);
+        $row++;
+    }
+
+    // Exportar archivo
+    $filename = 'Reporte Inventario-' . now()->format('YmdHis') . '.xlsx';
+    $tempFile = tempnam(sys_get_temp_dir(), $filename);
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($tempFile);
+
+    return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
+}
+
 
 
     public function getFilteredItems(Request $request){

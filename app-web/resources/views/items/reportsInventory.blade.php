@@ -340,6 +340,21 @@
                 });
             });
         }
+
+        document.getElementById('userMenuButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    });
+
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('userMenu');
+        const button = document.getElementById('userMenuButton');
+        if (menu && button && !menu.contains(event.target) && !button.contains(event.target)) {
+            menu.classList.add('hidden');
+        }
+    });
     </script>
 </body>
 </html>

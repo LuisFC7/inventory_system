@@ -354,4 +354,17 @@ class ItemController extends Controller
             }
         }, 'reporte-inventario-' . now()->format('YmdHis') . '.xlsx');
     }
+
+
+    public function deactivate(Item $item){
+        $user = Auth::user();
+
+        $item->item_activity = 0;
+        $item->item_fecha_modificacion = now();
+        $item->item_user_modifica_id = $user->user_id;
+        $item->save();
+
+        return redirect()->route('items.indexUpdateForm')->with('success', 'Ítem dado de baja correctamente.');
+    }
+
 }

@@ -43,5 +43,8 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['get', 'post'], '/items-filter-preview', [ReportController::class, 'getFilteredItems'])
     ->name('items.getFilteredItems');
 
+    Route::patch('/items/{item}/deactivate', [ItemController::class, 'deactivate'])->name('items.deactivate');
+
+
 
 });

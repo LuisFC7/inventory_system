@@ -154,7 +154,7 @@
                                             {{ ucfirst($item->item_status) }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-y-2">
                                         <a 
                                             href="{{ route('items.edit', $item->item_id) }}" 
                                             class="flex items-center px-3 py-2 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-md transition-colors"
@@ -163,7 +163,20 @@
                                             <i class="fas fa-edit mr-2"></i> 
                                             Editar
                                         </a>
+
+                                        <form method="POST" action="{{ route('items.deactivate', $item->item_id) }}" onsubmit="return confirmDelete(event)" class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button 
+                                                type="submit"
+                                                class="flex items-center px-3 py-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-md transition-colors"
+                                                title="Eliminar item"
+                                            >
+                                                <i class="fas fa-trash mr-2"></i> Eliminar
+                                            </button>
+                                        </form>
                                     </td>
+
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -201,15 +214,27 @@
                             <p class="text-sm">{{ $item->item_tag ?? 'N/A' }}</p>
                         </div>
                         
-                        <div class="mt-3">
+                        <div class="mt-3 flex flex-col gap-2">
                             <a 
                                 href="{{ route('items.edit', $item->item_id) }}" 
-                                class="flex items-center px-3 py-2 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-md transition-colors"
+                                class="flex items-center px-3 py-2 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-md transition-colors w-full justify-center"
                                 title="Editar item"
                             >
                                 <i class="fas fa-edit mr-2"></i> 
                                 Editar
                             </a>
+
+                            <form method="POST" action="{{ route('items.deactivate', $item->item_id) }}" onsubmit="return confirmDelete(event)">
+                                @csrf
+                                @method('PATCH')
+                                <button 
+                                    type="submit"
+                                    class="flex items-center px-3 py-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-md transition-colors w-full justify-center"
+                                    title="Eliminar item"
+                                >
+                                    <i class="fas fa-trash mr-2"></i> Eliminar
+                                </button>
+                            </form>
                         </div>
                     </div>
                     @endforeach
@@ -339,6 +364,15 @@
             if (event.target === modal) {
                 closeModal();
             }
+        }
+
+        function confirmDelete(event) {
+            const confirmed = confirm("¿Estás seguro que deseas eliminar este ítem? Esta acción no se puede deshacer.");
+            if (!confirmed) {
+                event.preventDefault(); // Detiene el envío del formulario
+                return false;
+            }
+            return true;
         }
     </script>
 </body>

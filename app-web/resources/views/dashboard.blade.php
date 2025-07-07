@@ -97,10 +97,10 @@
                             </a>
                             
                             <!-- Botón 4 -->
-                            <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
+                            <!-- <a href="#" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
                                 <i class="fas fa-minus-circle text-red-600 text-2xl mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700 text-center">Eliminar Item</span>
-                            </a>
+                            </a> -->
                             
                             <!-- Botón 5 -->
                             <a href="{{ route('items.reports') }}" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
