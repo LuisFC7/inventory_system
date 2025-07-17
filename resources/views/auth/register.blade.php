@@ -274,5 +274,6 @@
             }
         });
     </script>
+    @include('partials.footer')
 </body>
 </html>
