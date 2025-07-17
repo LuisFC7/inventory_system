@@ -27,7 +27,7 @@ class CustomResetPasswordNotification extends Notification
         ], false));
 
         return (new MailMessage)
-            ->subject('Restablecer Contraseña - ' . INVEX)
+            ->subject('Restablecer Contraseña - ' . 'INVEX')
             ->line('Hola ' . $notifiable->user_name . ',')
             ->line('Recibes este email porque se solicitó un restablecimiento de contraseña para tu cuenta.')
             ->action('Restablecer Contraseña', $resetUrl)
