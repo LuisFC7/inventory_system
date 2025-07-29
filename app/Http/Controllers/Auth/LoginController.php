@@ -80,11 +80,19 @@ class LoginController extends Controller
         return $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
+            'company' =>'required|string'
         ]);
     }
 
     protected function attemptLogin(array $credentials, $remember = false)
     {
+
+        if ($credentials['company'] !== '023989ewd') {
+            throw ValidationException::withMessages([
+                'company' => 'Acceso restringido: código de empresa inválido',
+            ]);
+        }
+        
         $user = Users::where('user_tag', $credentials['username'])
                 ->orWhere('user_email', $credentials['username'])
                 ->first();
