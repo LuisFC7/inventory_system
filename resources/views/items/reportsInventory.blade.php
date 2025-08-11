@@ -115,11 +115,12 @@
                                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                                 <select id="status" name="status" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <option value="">Todos los estados</option>
-                                    <option value="DISPONIBLE">Disponible</option>
-                                    <option value="DETENIDA">Detenida</option>
-                                    <option value="TRABAJANDO">Trabajando</option>
-                                    <option value="POR SALIR">Por salir</option>
-                                    <option value="COMPRAS">Compras</option>
+                                    <option value="DISPONIBLE">DISPONIBLE</option>
+                                    <option value="DAÑADA">DAÑADA</option>
+                                    <option value="ASIGNADA">ASIGNADA</option>
+                                    <option value="REPARACIÓN">REPARACIÓN</option>
+                                    <option value="RESGUARDO">RESGUARDO</option>
+                                    <option value="SOLO VIDEO">SOLO VIDEO</option>
                                 </select>
                             </div>
                             

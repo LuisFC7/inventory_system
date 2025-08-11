@@ -45,11 +45,12 @@
                         <span class="mt-2 sm:mt-0 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border @php
                            
                             $statusClasses = [
-                                'DISPONIBLE' => 'bg-green-100 text-green-800 border-green-200',
-                                'DETENIDA' => 'bg-red-100 text-red-800 border-red-200',
-                                'TRABAJANDO' => 'bg-blue-100 text-blue-800 border-blue-200',
-                                'POR SALIR' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
-                                'COMPRAS' => 'bg-purple-100 text-purple-800 border-purple-200'
+                                'DISPONIBLE' => 'bg-teal-100 text-teal-800 border-teal-200',       
+                                'DAÑADA' => 'bg-rose-100 text-rose-800 border-rose-200',           
+                                'ASIGNADA' => 'bg-indigo-100 text-indigo-800 border-indigo-200',   
+                                'REPARACIÓN' => 'bg-amber-100 text-amber-800 border-amber-200',   
+                                'RESGUARDO' => 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200',
+                                'SOLO VIDEO' => 'bg-slate-100 text-slate-800 border-slate-200', 
                             ];
                             
                             // Normalizamos el estado del ítem a mayúsculas y sin espacios extras

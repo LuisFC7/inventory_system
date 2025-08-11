@@ -11,6 +11,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Auth\UtiitiesController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Models\Users;
 
 
 Route::get('/', function () {
@@ -74,10 +75,31 @@ Route::get('/email/verify', function () {
     return view('auth.verifyEmail');
 })->middleware('auth')->name('verification.notice');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
+// Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//     $request->fulfill();
+//     return redirect('/')->with('verified', true);
+// })->middleware(['auth', 'signed'])->name('verification.verify');
+
+
+Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
+    // Buscar usuario usando la clave primaria personalizada
+    $user = Users::where('user_id', $id)->firstOrFail();
+
+    // Validar que el hash corresponda al email real del usuario
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403, 'Enlace de verificación inválido');
+    }
+
+    // Si no está verificado, marcarlo como verificado y cambiar user_status
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified(); // Este método ya actualiza email_verified_at y user_status
+    }
+
+    // Opcional: iniciar sesión automáticamente
+    Auth::login($user);
+
     return redirect('/')->with('verified', true);
-})->middleware(['auth', 'signed'])->name('verification.verify');
+})->middleware(['signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();

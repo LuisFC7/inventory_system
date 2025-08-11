@@ -216,7 +216,7 @@
                                     <select name="item_status" id="item_status" 
                                         class="w-full px-3 py-2 text-gray-700 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 @error('item_status') border-red-400 @enderror" required>
                                         <option value="">Seleccione un estado</option>
-                                        @foreach(['DISPONIBLE', 'DETENIDA', 'TRABAJANDO', 'POR SALIR', 'COMPRAS'] as $status)
+                                        @foreach(['DISPONIBLE', 'DAÑADA', 'ASIGNADA', 'REPARACIÓN', 'RESGUARDO', 'SOLO VIDEO'] as $status)
                                             <option value="{{ $status }}" {{ old('item_status', $item->item_status) == $status ? 'selected' : '' }}>
                                                 {{ $status }}
                                             </option>

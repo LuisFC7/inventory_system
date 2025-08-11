@@ -88,11 +88,42 @@
             font-weight: 500;
         }
 
-        .status-DISPONIBLE { background-color: #e6fffa; color: #38b2ac; }
-        .status-DETENIDA { background-color: #fff5f5; color: #f56565; }
-        .status-TRABAJANDO { background-color: #ebf8ff; color: #4299e1; }
-        .status-POR-SALIR { background-color: #fffaf0; color: #ed8936; }
-        .status-COMPRAS { background-color: #faf5ff; color: #9f7aea; }
+        .status-DISPONIBLE {
+  background-color: #e6fffa; /* teal-100 */
+  color: #285e61;            /* teal-800 */
+  border: 1px solid #81e6d9; /* teal-200 */
+}
+
+.status-DAÑADA {
+  background-color: #fff1f2; /* rose-100 */
+  color: #9b2c2c;            /* rose-800 */
+  border: 1px solid #fecdd3; /* rose-200 */
+}
+
+.status-ASIGNADA {
+  background-color: #e0e7ff; /* indigo-100 */
+  color: #3730a3;            /* indigo-800 */
+  border: 1px solid #c7d2fe; /* indigo-200 */
+}
+
+.status-REPARACIÓN {
+  background-color: #fffbeb; /* amber-100 */
+  color: #92400e;            /* amber-800 */
+  border: 1px solid #fde68a; /* amber-200 */
+}
+
+.status-RESGUARDO {
+  background-color: #fdf4ff; /* fuchsia-100 */
+  color: #701a75;            /* fuchsia-800 */
+  border: 1px solid #fae8ff; /* fuchsia-200 */
+}
+
+.status-SOLO-VIDEO {
+  background-color: #ecfeff; /* cyan-100 */
+  color: #155e75;            /* cyan-800 */
+  border: 1px solid #99f6e4; /* cyan-200 */
+}
+
 
         .no-data {
             text-align: center;

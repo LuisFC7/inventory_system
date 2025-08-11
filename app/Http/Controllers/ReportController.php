@@ -28,7 +28,7 @@ class ReportController extends Controller
         $validated = $request->validate([
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-            'status' => 'nullable|string|in:DISPONIBLE,DETENIDA,TRABAJANDO,POR SALIR,COMPRAS',
+            'status' => 'nullable|string|in:DISPONIBLE, DAÑADA, ASIGNADA, REPARACIÓN, RESGUARDO, SOLO VIDEO',
             'user_id' => 'nullable|integer|exists:users,user_id',
             'location' => 'nullable|string|in:origin,destination',
             'location_value' => 'nullable|string|max:255',
@@ -269,7 +269,7 @@ class ReportController extends Controller
             $validated = $request->validate([
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date|after_or_equal:start_date',
-                'status' => 'nullable|string|in:DISPONIBLE,DETENIDA,TRABAJANDO,POR SALIR,COMPRAS',
+                'status' => 'nullable|string|in:DISPONIBLE, DAÑADA, ASIGNADA, REPARACIÓN, RESGUARDO, SOLO VIDEO',
                 'user_id' => 'nullable|integer|exists:users,user_id',
                 'modified_user_id' => 'nullable|integer|exists:users,user_id',
                 'location' => 'nullable|string|in:origin,destination',
@@ -282,7 +282,7 @@ class ReportController extends Controller
             $validated = $request->validate([
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date|after_or_equal:start_date',
-                'status' => 'nullable|string|in:DISPONIBLE,DETENIDA,TRABAJANDO,POR SALIR,COMPRAS',
+                'status' => 'nullable|string|in:DISPONIBLE, DAÑADA, ASIGNADA, REPARACIÓN, RESGUARDO, SOLO VIDEO',
                 'user_id' => 'nullable|integer|exists:users,user_id',
                 'modified_user_id' => 'nullable|integer|exists:users,user_id',
                 'location' => 'nullable|string|in:origin,destination',

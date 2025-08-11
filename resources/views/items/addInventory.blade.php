@@ -239,10 +239,11 @@
             class="w-full px-3 py-2 text-gray-700 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 @error('item_status') border-red-400 @enderror" required>
             <option value="">Seleccione un status</option>
             <option value="DISPONIBLE" {{ old('item_status') == 'DISPONIBLE' ? 'selected' : '' }}>DISPONIBLE</option>
-            <option value="DETENIDA" {{ old('item_status') == 'DETENIDA' ? 'selected' : '' }}>DETENIDA</option>
-            <option value="TRABAJANDO" {{ old('item_status') == 'TRABAJANDO' ? 'selected' : '' }}>TRABAJANDO</option>
-            <option value="POR SALIR" {{ old('item_status') == 'POR SALIR' ? 'selected' : '' }}>POR SALIR</option>
-            <option value="COMPRAS" {{ old('item_status') == 'COMPRAS' ? 'selected' : '' }}>COMPRAS</option>
+            <option value="DAÑADA" {{ old('item_status') == 'DAÑADA' ? 'selected' : '' }}>DAÑADA</option>
+            <option value="ASIGNADA" {{ old('item_status') == 'ASIGNADA' ? 'selected' : '' }}>ASIGNADA</option>
+            <option value="REPARACIÓN" {{ old('item_status') == 'REPARACIÓN' ? 'selected' : '' }}>REPARACIÓN</option>
+            <option value="RESGUARDO" {{ old('item_status') == 'RESGUARDO' ? 'selected' : '' }}>RESGUARDO</option>
+            <option value="SOLO VIDEO" {{ old('item_status') == 'SOLO VIDEO' ? 'selected' : '' }}>SOLO VIDEO</option>
         </select>
         @error('item_status')
             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
