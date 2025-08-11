@@ -63,10 +63,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <i class="fas fa-cog mr-2 text-gray-400"></i> Configuración
-                            </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            </a> -->
+                            <a href="{{ route('items.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <i class="fas fa-boxes mr-2 text-gray-400"></i> Inventario
                             </a>
                             <form id="logoutForm" action="{{ route('logout') }}" method="POST">

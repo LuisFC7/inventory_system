@@ -53,8 +53,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::patch('/items/{item}/deactivate', [ItemController::class, 'deactivate'])->name('items.deactivate');
 
-
-
 });
 
 // Recovering password

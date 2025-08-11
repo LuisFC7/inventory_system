@@ -37,10 +37,10 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-cog mr-2 text-gray-400"></i> Configuración
-                        </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        </a> -->
+                        <a href="{{ route('items.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-boxes mr-2 text-gray-400"></i> Inventario
                         </a>
                         <form id="logoutForm" action="{{ route('logout') }}" method="POST">
@@ -77,7 +77,7 @@
                     <!-- Sección de Acciones Rápidas (ahora ocupa todo el ancho) -->
                     <div class="bg-green-50 p-6 rounded-lg">
                         <h2 class="text-lg font-semibold text-green-800 mb-4">Acciones Rápidas</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <!-- Botón 2 -->
                             <a href="{{ route('items.index') }}" class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-green-300">
                                 <i class="fas fa-search text-blue-600 text-2xl mb-2"></i>

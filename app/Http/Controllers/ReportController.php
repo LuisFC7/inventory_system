@@ -47,6 +47,8 @@ class ReportController extends Controller
     protected function buildReportQuery(array $filters){
         $query = Item::with('user', 'userModifier');
 
+        $query->where('item_activity', 1);
+
         // Filtro por rango de fechas
         if (!empty($filters['date_range'])) {
             $dateField = $this->getDateField($filters['date_range']);

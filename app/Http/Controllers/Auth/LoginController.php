@@ -87,7 +87,7 @@ class LoginController extends Controller
     protected function attemptLogin(array $credentials, $remember = false)
     {
 
-        if ($credentials['company'] !== '023989ewd') {
+        if ($credentials['company'] !== 'RI2N7T0I1') {
             throw ValidationException::withMessages([
                 'company' => 'Acceso restringido: código de empresa inválido',
             ]);
