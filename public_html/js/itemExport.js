@@ -14,14 +14,15 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function getStatusCircleStyle(statusClass) {
-        let bg = '#3B82F6'; // azul por defecto
+        let bg = '#374151'; // azul por defecto
 
-        if (statusClass.includes('green')) bg = '#10B981'; // verde
-        else if (statusClass.includes('red')) bg = '#EF4444'; // rojo
-        else if (statusClass.includes('blue')) bg = '#3B82F6';   // azul
-        else if (statusClass.includes('yellow')) bg = '#F59E0B'; // amarillo
-        else if (statusClass.includes('purple')) bg = '#8B5CF6'; // morado
-        else if (statusClass.includes('gray')) bg = '#6B7280'; // gris
+        if (statusClass.includes('teal')) bg = '#14B8A6';       // teal-500 (verde azulado)
+        else if (statusClass.includes('rose')) bg = '#E11D48';  // rose-600 (rojo suave)
+        else if (statusClass.includes('indigo')) bg = '#4338CA';// indigo-700 (azul índigo)
+        else if (statusClass.includes('amber')) bg = '#D97706'; // amber-600 (ámbar)
+        else if (statusClass.includes('fuchsia')) bg = '#A21CAF'; // fuchsia-700 (fucsia vibrante)
+        else if (statusClass.includes('gray')) bg = '#374151'; // gris oscuro (gray-700)
+
 
         return `
             width: 64px;
@@ -95,11 +96,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         border-radius: 9999px;
                         font-size: ${0.8 * (forPDF ? PDF_CONFIG.fontScale : 1)}rem;
                         font-weight: 600;
-                        ${item.statusClass.includes('green') ? 'background-color: #D1FAE5; color: #065F46;' : ''}
-                        ${item.statusClass.includes('red') ? 'background-color: #FEE2E2; color: #B91C1C;' : ''}
-                        ${item.statusClass.includes('blue') ? 'background-color: #DBEAFE; color: #1D4ED8;' : ''}
-                        ${item.statusClass.includes('yellow') ? 'background-color: #FEF3C7; color: #92400E;' : ''}
-                        ${item.statusClass.includes('gray') ? 'background-color: #F3F4F6; color: #374151;' : ''}
+                        ${item.statusClass.includes('teal') ? 'background-color: #CCFBF1; color: #134E4A;' : ''}
+                        ${item.statusClass.includes('rose') ? 'background-color: #FFE4E6; color: #9F1239;' : ''}
+                        ${item.statusClass.includes('indigo') ? 'background-color: #E0E7FF; color: #3730A3;' : ''}
+                        ${item.statusClass.includes('amber') ? 'background-color: #FFFBEB; color: #92400E;' : ''}
+                        ${item.statusClass.includes('fuchsia') ? 'background-color: #FAE8FF; color: #701A75;' : ''}
+                        ${item.statusClass.includes('gray') ? 'background-color: #F3F4F6; color: #1F2937;' : ''}
+
+
                     }
                     .detail-grid {
                         display: grid;
