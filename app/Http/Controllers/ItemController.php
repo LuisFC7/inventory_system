@@ -235,7 +235,7 @@ class ItemController extends Controller
 
     // Generar reporte
     public function generateReport(Request $request)
-    {
+    {    
         $request->validate([
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',

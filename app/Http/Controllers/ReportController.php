@@ -28,10 +28,12 @@ class ReportController extends Controller
         $validated = $request->validate([
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-            'status' => 'nullable|string|in:DISPONIBLE, DAÑADA, ASIGNADA, REPARACIÓN, RESGUARDO, SOLO VIDEO',
+            'status' => 'nullable|string|in:DISPONIBLE,DAÑADA,ASIGNADA,REPARACIÓN,RESGUARDO,SOLO VIDEO',
             'user_id' => 'nullable|integer|exists:users,user_id',
+            'modified_user_id' => 'nullable|integer|exists:users,user_id',
             'location' => 'nullable|string|in:origin,destination',
             'location_value' => 'nullable|string|max:255',
+            'date_range' => 'nullable|string|in:entry_date,modification_date,exit_date',
             'format' => 'required|string|in:pdf,excel'
         ]);
 
@@ -90,6 +92,7 @@ class ReportController extends Controller
             $locationField = $filters['location'] === 'origin' ? 'item_origen' : 'item_destino';
             $query->where($locationField, 'LIKE', '%' . $filters['location_value'] . '%');
         }
+
 
         return $query;
     }
@@ -269,7 +272,7 @@ class ReportController extends Controller
             $validated = $request->validate([
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date|after_or_equal:start_date',
-                'status' => 'nullable|string|in:DISPONIBLE, DAÑADA, ASIGNADA, REPARACIÓN, RESGUARDO, SOLO VIDEO',
+                'status' => 'nullable|string|in:DISPONIBLE,DAÑADA,ASIGNADA,REPARACIÓN,RESGUARDO,SOLO VIDEO',
                 'user_id' => 'nullable|integer|exists:users,user_id',
                 'modified_user_id' => 'nullable|integer|exists:users,user_id',
                 'location' => 'nullable|string|in:origin,destination',
@@ -282,7 +285,7 @@ class ReportController extends Controller
             $validated = $request->validate([
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date|after_or_equal:start_date',
-                'status' => 'nullable|string|in:DISPONIBLE, DAÑADA, ASIGNADA, REPARACIÓN, RESGUARDO, SOLO VIDEO',
+                'status' => 'nullable|string|in:DISPONIBLE,DAÑADA,ASIGNADA,REPARACIÓN,RESGUARDO,SOLO VIDEO',
                 'user_id' => 'nullable|integer|exists:users,user_id',
                 'modified_user_id' => 'nullable|integer|exists:users,user_id',
                 'location' => 'nullable|string|in:origin,destination',
